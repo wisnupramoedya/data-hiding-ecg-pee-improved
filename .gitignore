@@ -1,6 +1,7 @@
 out/*
 logs/*
 data/*
+utils/token.py
 
 **/__pycache__/
 !**/.gitkeep
