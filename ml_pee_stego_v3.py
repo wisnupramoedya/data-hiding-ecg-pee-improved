@@ -62,11 +62,14 @@ class MLPEEStego:
 
             for i in self.get_phase_indexes(phase, len(watermarked_data)):
                 secret_remainder = len(secret_data) - secret_index
-                # print("LEN: ", len(secret_data),
-                #       secret_index, secret_remainder)
-                if i + 4 >= len(watermarked_data) or secret_remainder <= 0:
+                if secret_remainder <= 0:
                     has_embedding_end = True
                     print(has_embedding_end)
+                    break
+
+                # print("LEN: ", len(secret_data),
+                #       secret_index, secret_remainder)
+                if i + 4 >= len(watermarked_data):
                     break
 
                 # Get error from predicted value and original value
