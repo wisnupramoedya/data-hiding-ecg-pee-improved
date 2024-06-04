@@ -22,3 +22,7 @@ v2:
 V3:
 
 - Memakai sistem mirror embedding
+
+V4:
+
+- Memakai sistem middle mirror embedding
