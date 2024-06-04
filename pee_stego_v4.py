@@ -112,8 +112,8 @@ class PEEStego:
                 watermarked_data[i+2] = watermarked_value
                 last_i = i
 
-                # print(i, secret_value, watermarked_value, predicted_value, original_value,
-                #       mirror_diff)
+                # print("EMB -> i:", i, "OV:", original_value, "PV:", predicted_value,
+                #       "WV:", watermarked_value, "sv:", secret_value, "I:", mirror_diff)
 
             last_phase = phase
 
@@ -184,18 +184,14 @@ class PEEStego:
                     continue
 
                 mirror_value = mirror_data[-1]
-
-                original_value = first_mirror_point + \
-                    original_diff if predicted_value <= watermarked_value else first_mirror_point - original_diff
-                original_data[i+2] = original_value
-
-                extraction_error = abs(
-                    abs(watermarked_value - predicted_value) - mirror_value)
+                extraction_error = abs(watermarked_value - predicted_value) - mirror_value if predicted_value <= watermarked_value else abs(
+                    watermarked_value - predicted_value) + mirror_value
 
                 if abs(watermarked_value - predicted_value) <= 1:
                     continue
-                print("i:", i, "WV:", watermarked_value, "EE:", extraction_error, "MV:",
-                      mirror_value, "PV:", predicted_value)
+
+                original_value = watermarked_value - mirror_value
+                original_data[i+2] = original_value
 
                 available_bit = math.floor(math.log2(extraction_error))
                 if not has_last_embedded_bit:
@@ -206,25 +202,24 @@ class PEEStego:
                     payload_rate + threshold) if available_bit >= payload_rate + threshold else available_bit
 
                 secret_value_limit = 2**extraction_bit_total
+                half_secret_value_limit = int((secret_value_limit/2) - 1)
                 mirror_total = math.floor(
-                    extraction_error/secret_value_limit) + 1
+                    (extraction_error - half_secret_value_limit)/secret_value_limit) + 1
 
-                last_mirror_point = predicted_value + \
-                    mirror_value if predicted_value <= watermarked_value else predicted_value - mirror_value
-                first_mirror_point = last_mirror_point + (secret_value_limit*(
-                    mirror_total-1)) if predicted_value <= watermarked_value else last_mirror_point - (secret_value_limit*(mirror_total-1))
+                first_mirror_point = original_value - \
+                    half_secret_value_limit if predicted_value <= watermarked_value else original_value + \
+                    half_secret_value_limit
 
                 secret_value = abs(watermarked_value - first_mirror_point) if mirror_total % 2 else (
                     secret_value_limit - abs(watermarked_value - first_mirror_point)) % secret_value_limit
                 secret_data = bin(secret_value)[
                     2:].zfill(extraction_bit_total) + secret_data
 
-                original_diff = int((secret_value_limit/2) - 1)
-
                 mirror_data = mirror_data[:-1]
 
-                # print(i, secret_value, watermarked_value, predicted_value, original_value,
-                #       mirror_value)
+                # print("EXT -> i:", i, "OV:", original_value, "PV:", predicted_value,
+                #       "WV:", watermarked_value, "sv:", secret_value, "I:", mirror_value)
+
                 # print("191 -> SEC VALUE LIMIT: ", secret_value_limit,
                 #       "MIRROR TOTAL: ", mirror_total)
                 # print(i, secret_value, bin(secret_value)[
