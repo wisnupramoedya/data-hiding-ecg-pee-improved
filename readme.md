@@ -28,6 +28,8 @@ pip install -r requirements.txt
   - Copy `utils/token.py.example` to `utils/token.py`.
   - Open `utils/token.py` and replace the placeholder with your actual Telegram bot API token.
 
+4. Download the database [MIT-BIH](https://physionet.org/content/mitdb/1.0.0/) and place the extracted data on folder `data`
+
 ### Running the Code
 To execute the steganography implementation, run the corresponding Jupyter Notebook file with format `stego_v{version}_{test/trial}.ipynb`
 
